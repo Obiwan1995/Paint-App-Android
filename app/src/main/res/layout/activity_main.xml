@@ -70,7 +70,8 @@
         android:id="@+id/paint_colors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:background="#0000">
 
         <ImageButton
             android:layout_width="@dimen/large_brush"
@@ -80,7 +81,7 @@
             android:contentDescription="@string/paint"
             android:onClick="paintClicked"
             android:src="@drawable/pallet"
-            android:tag="@color/skin" />
+            android:tag="@color/skin"/>
 
         <ImageButton
             android:layout_width="@dimen/large_brush"
