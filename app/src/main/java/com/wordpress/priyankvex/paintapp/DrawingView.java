@@ -123,6 +123,8 @@ public class DrawingView extends View{
         drawPaint.setStrokeWidth(brushSize);
     }
 
+    public float getBrushSize() { return brushSize;}
+
     public void setLastBrushSize(float lastSize){
         lastBrushSize=lastSize;
     }

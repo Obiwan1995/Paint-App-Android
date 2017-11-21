@@ -16,11 +16,11 @@
         >
 
         <ImageButton
-            android:id="@+id/buttonNew"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:contentDescription="@string/start_new"
-            android:src="@drawable/new_pic" />
+                android:id="@+id/buttonNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/start_new"
+                android:src="@drawable/new_pic"/>
 
         <ImageButton
             android:id="@+id/buttonBrush"
@@ -62,7 +62,8 @@
         android:id="@+id/paint_colors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:background="#0000">
 
         <ImageButton
             android:layout_width="@dimen/large_brush"
@@ -72,7 +73,7 @@
             android:contentDescription="@string/paint"
             android:onClick="paintClicked"
             android:src="@drawable/pallet"
-            android:tag="@color/skin" />
+            android:tag="@color/skin"/>
 
         <ImageButton
             android:layout_width="@dimen/large_brush"

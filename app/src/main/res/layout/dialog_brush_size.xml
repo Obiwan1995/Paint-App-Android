@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:contentDescription="@string/small"
+        android:background="#0000"
+        android:padding="5dp"
         android:src="@drawable/small" />
 
     <ImageButton
@@ -20,7 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:contentDescription="@string/medium"
-        android:src="@drawable/medium" />
+        android:background="#0000"
+        android:padding="5dp"
+        android:src="@drawable/medium"/>
 
     <ImageButton
         android:id="@+id/large_brush"
@@ -28,6 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:contentDescription="@string/large"
-        android:src="@drawable/large" />
+        android:background="#0000"
+        android:padding="5dp"
+        android:src="@drawable/large"/>
 
 </LinearLayout>
