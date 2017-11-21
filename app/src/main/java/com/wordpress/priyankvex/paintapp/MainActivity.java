@@ -20,7 +20,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -126,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 mDrawingView.loadImage(selectedImage);
                 newButton.setVisibility(View.VISIBLE);
+                textButton.setVisibility(View.VISIBLE);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showAddTextDialog(){
-
+        mDrawingView.applyNegateFilter();
     }
 
     private void showBrushSizeChooserDialog(){

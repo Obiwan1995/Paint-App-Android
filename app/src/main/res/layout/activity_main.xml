@@ -35,7 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:contentDescription="@string/add_text"
-            android:src="@drawable/ic_text_fields_black_24dp" />
+            android:src="@drawable/ic_brightness_3_black_24dp"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/buttonBrush"

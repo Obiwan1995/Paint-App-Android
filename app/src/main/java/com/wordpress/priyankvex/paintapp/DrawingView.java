@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+
 /**
  * Created by Priyank(@priyankvex) on 5/9/15.
  *
@@ -38,6 +39,7 @@ public class DrawingView extends View{
     // To enable and disable erasing mode.
     private boolean erase = false;
     private Bitmap lastLoadedImage = null;
+    private Bitmap currentImage = null;
 
     public DrawingView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -155,6 +157,13 @@ public class DrawingView extends View{
 
     public void loadImage(Bitmap bmp){
         lastLoadedImage = bmp;
+        currentImage = bmp;
         drawCanvas.drawBitmap(bmp, null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
+    }
+
+    public void applyNegateFilter(){
+        currentImage = Negate.invert(currentImage);
+        drawCanvas.drawBitmap(currentImage , null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
+        invalidate();
     }
 }
