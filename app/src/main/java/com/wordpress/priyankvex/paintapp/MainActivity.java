@@ -1,24 +1,34 @@
 package com.wordpress.priyankvex.paintapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private DrawingView mDrawingView;
-    private ImageButton currPaint, drawButton, eraseButton, newButton, saveButton;
+    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, textButton;
     private float smallBrush, mediumBrush, largeBrush;
+    private final int RESULT_LOAD_IMG = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +41,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 0th child is white color, so selecting first child to give black as initial color.
         currPaint = (ImageButton)paintLayout.getChildAt(1);
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.pallet_pressed));
+        addButton = (ImageButton) findViewById(R.id.buttonAdd);
+        addButton.setOnClickListener(this);
+        textButton = (ImageButton) findViewById(R.id.buttonAddText);
+        textButton.setOnClickListener(this);
         drawButton = (ImageButton) findViewById(R.id.buttonBrush);
         drawButton.setOnClickListener(this);
-        eraseButton = (ImageButton) findViewById(R.id.buttonErase);
-        eraseButton.setOnClickListener(this);
         newButton = (ImageButton) findViewById(R.id.buttonNew);
         newButton.setOnClickListener(this);
         saveButton = (ImageButton) findViewById(R.id.buttonSave);
@@ -76,9 +88,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Show brush size chooser dialog
                 showBrushSizeChooserDialog();
                 break;
-            case R.id.buttonErase:
-                // Show eraser size chooser dialog
-                showEraserSizeChooserDialog();
+            case R.id.buttonAdd:
+                //Load a photo from gallery
+                showLoadPictureDialog();
+                break;
+            case R.id.buttonAddText:
+                //Show add text dialog
+                showAddTextDialog();
                 break;
             case R.id.buttonNew:
                 // Show new painting alert dialog
@@ -89,6 +105,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showSavePaintingConfirmationDialog();
                 break;
         }
+    }
+
+    private void showLoadPictureDialog(){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                mDrawingView.loadImage(selectedImage);
+                newButton.setVisibility(View.VISIBLE);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+
+        }else {
+            Toast.makeText(MainActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void showAddTextDialog(){
+
     }
 
     private void showBrushSizeChooserDialog(){
@@ -124,40 +170,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         mDrawingView.setErase(false);
-        brushDialog.show();
-    }
-
-    private void showEraserSizeChooserDialog(){
-        final Dialog brushDialog = new Dialog(this);
-        brushDialog.setTitle("Eraser size:");
-        brushDialog.setContentView(R.layout.dialog_brush_size);
-        ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-        smallBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                mDrawingView.setErase(true);
-                mDrawingView.setBrushSize(smallBrush);
-                brushDialog.dismiss();
-            }
-        });
-        ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-        mediumBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawingView.setErase(true);
-                mDrawingView.setBrushSize(mediumBrush);
-                brushDialog.dismiss();
-            }
-        });
-        ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-        largeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawingView.setErase(true);
-                mDrawingView.setBrushSize(largeBrush);
-                brushDialog.dismiss();
-            }
-        });
         brushDialog.show();
     }
 

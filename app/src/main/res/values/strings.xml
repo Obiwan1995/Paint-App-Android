@@ -7,6 +7,8 @@
     <string name="start_new">New</string>
     <string name="brush">Brush</string>
     <string name="erase">Erase</string>
+    <string name="add_photo">Add photo</string>
+    <string name="add_text">Add text</string>
     <string name="save">Save</string>
     <string name="paint">Paint</string>
     <string name="small">Small</string>

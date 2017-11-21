@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -36,6 +37,7 @@ public class DrawingView extends View{
     private float brushSize, lastBrushSize;
     // To enable and disable erasing mode.
     private boolean erase = false;
+    private Bitmap lastLoadedImage = null;
 
     public DrawingView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -146,5 +148,11 @@ public class DrawingView extends View{
     public void startNew(){
         drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
+        loadImage(lastLoadedImage);
+    }
+
+    public void loadImage(Bitmap bmp){
+        lastLoadedImage = bmp;
+        drawCanvas.drawBitmap(bmp, null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
     }
 }

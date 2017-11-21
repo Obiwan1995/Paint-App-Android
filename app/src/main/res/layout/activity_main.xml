@@ -20,28 +20,36 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:contentDescription="@string/start_new"
-            android:src="@drawable/new_pic" />
+            android:src="@drawable/ic_eraser"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/buttonAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:contentDescription="@string/add_photo"
+            android:src="@drawable/ic_add_a_photo_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonAddText"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:contentDescription="@string/add_text"
+            android:src="@drawable/ic_text_fields_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonBrush"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:contentDescription="@string/brush"
-            android:src="@drawable/brush" />
-
-        <ImageButton
-            android:id="@+id/buttonErase"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:contentDescription="@string/erase"
-            android:src="@drawable/eraser" />
+            android:src="@drawable/ic_brush_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonSave"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:contentDescription="@string/save"
-            android:src="@drawable/save" />
+            android:src="@drawable/ic_save_black_24dp" />
 
     </LinearLayout>
 
