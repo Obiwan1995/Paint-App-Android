@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                     mDrawingView.loadImage(selectedImage.copy(Bitmap.Config.ARGB_8888, true));
-                    newButton.setVisibility(View.VISIBLE);
 					textButton.setVisibility(View.VISIBLE);
                 }
             } catch (FileNotFoundException e) {

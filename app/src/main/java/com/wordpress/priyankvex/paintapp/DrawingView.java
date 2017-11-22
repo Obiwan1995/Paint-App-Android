@@ -158,13 +158,25 @@ public class DrawingView extends View{
     }
 
     public void startNew(){
-        loadImage(lastLoadedImage);
+    	if (lastLoadedImage != null)
+		{
+			loadImage(lastLoadedImage);
+		}
+		else
+		{
+			drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+			invalidate();
+		}
     }
 
     public void loadImage(Bitmap bmp){
         lastLoadedImage = bmp;
         currentImage = bmp;
-		drawCanvas.drawBitmap(bmp, 0, 0, drawPaint);
+        int width = drawCanvas.getWidth();
+        int height = drawCanvas.getHeight();
+		Rect rect = new Rect(0, 0, width, height);
+
+		drawCanvas.drawBitmap(bmp, new Rect(0, 0, bmp.getWidth(), bmp.getHeight()), rect, drawPaint);
         invalidate();
     }
 
