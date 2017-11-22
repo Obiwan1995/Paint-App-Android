@@ -30,11 +30,11 @@
             android:src="@drawable/ic_add_a_photo_black_24dp" />
 
         <ImageButton
-            android:id="@+id/buttonAddText"
+            android:id="@+id/buttonAddFilter"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:contentDescription="@string/add_text"
-            android:src="@drawable/ic_brightness_3_black_24dp"
+            android:contentDescription="@string/add_filter"
+            android:src="@drawable/ic_photo_filter_black_24dp"
             android:visibility="gone"/>
 
         <ImageButton
@@ -74,8 +74,8 @@
         android:background="#0000">
 
         <ImageButton
-            android:layout_width="@dimen/large_brush"
-            android:layout_height="@dimen/large_brush"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="2dp"
             android:background="@color/skin"
             android:contentDescription="@string/paint"
@@ -84,8 +84,8 @@
             android:tag="@color/skin"/>
 
         <ImageButton
-            android:layout_width="@dimen/large_brush"
-            android:layout_height="@dimen/large_brush"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="2dp"
             android:background="@color/black"
             android:contentDescription="@string/paint"
@@ -94,8 +94,8 @@
             android:tag="@color/black" />
 
         <ImageButton
-            android:layout_width="@dimen/large_brush"
-            android:layout_height="@dimen/large_brush"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="2dp"
             android:background="@color/red"
             android:contentDescription="@string/paint"
@@ -104,8 +104,8 @@
             android:tag="@color/red" />
 
         <ImageButton
-            android:layout_width="@dimen/large_brush"
-            android:layout_height="@dimen/large_brush"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="2dp"
             android:background="@color/green"
             android:contentDescription="@string/paint"
@@ -114,8 +114,8 @@
             android:tag="@color/green" />
 
         <ImageButton
-            android:layout_width="@dimen/large_brush"
-            android:layout_height="@dimen/large_brush"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="2dp"
             android:background="@color/blue"
             android:contentDescription="@string/paint"
@@ -124,8 +124,8 @@
             android:tag="@color/blue" />
 
         <ImageButton
-            android:layout_width="@dimen/large_brush"
-            android:layout_height="@dimen/large_brush"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="2dp"
             android:background="@color/yellow"
             android:contentDescription="@string/paint"

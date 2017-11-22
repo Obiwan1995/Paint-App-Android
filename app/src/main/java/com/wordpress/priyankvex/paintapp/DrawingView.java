@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -135,8 +137,6 @@ public class DrawingView extends View{
         drawPaint.setStrokeWidth(brushSize);
     }
 
-    public float getBrushSize() { return brushSize;}
-
     public void setLastBrushSize(float lastSize){
         lastBrushSize=lastSize;
     }
@@ -180,9 +180,24 @@ public class DrawingView extends View{
         invalidate();
     }
 
-    public void applyNegateFilter(){
-        currentImage = Negate.invert(currentImage);
-        drawCanvas.drawBitmap(currentImage , null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
+    public void removeAllFilters() {
+    	drawBitmap(lastLoadedImage);
         invalidate();
     }
+
+    public void applyNegateFilter(){
+        currentImage = Negate.invert(currentImage);
+        drawBitmap(currentImage);
+		invalidate();
+    }
+
+    public void applyGrayScaleFilter() {
+		currentImage = Grayscale.toGrayscale(currentImage);
+		drawBitmap(currentImage);
+		invalidate();
+    }
+
+    public void drawBitmap(Bitmap bitmap) {
+		drawCanvas.drawBitmap(bitmap, null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
+	}
 }
