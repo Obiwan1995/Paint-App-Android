@@ -2,12 +2,14 @@ package com.wordpress.priyankvex.paintapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -69,7 +71,14 @@ public class DrawingView extends View{
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        if (lastLoadedImage != null)
+		{
+			canvasBitmap = Bitmap.createBitmap(lastLoadedImage);
+		}
+		else
+		{
+			canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+		}
         drawCanvas = new Canvas(canvasBitmap);
     }
 
@@ -148,13 +157,12 @@ public class DrawingView extends View{
     }
 
     public void startNew(){
-        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        invalidate();
         loadImage(lastLoadedImage);
     }
 
     public void loadImage(Bitmap bmp){
         lastLoadedImage = bmp;
-        drawCanvas.drawBitmap(bmp, null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
+		drawCanvas.drawBitmap(bmp, 0, 0, drawPaint);
+        invalidate();
     }
 }

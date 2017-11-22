@@ -122,10 +122,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                mDrawingView.loadImage(selectedImage);
-                newButton.setVisibility(View.VISIBLE);
+                if (imageUri != null)
+                {
+                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    mDrawingView.loadImage(selectedImage.copy(Bitmap.Config.ARGB_8888, true));
+                    newButton.setVisibility(View.VISIBLE);
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
