@@ -24,6 +24,13 @@
 				android:layout_width="wrap_content"
 				android:layout_height="fill_parent"
 				android:contentDescription="@string/start_new"
+				android:src="@drawable/ic_insert_drive_file_black_24dp"/>
+
+			<ImageButton
+				android:id="@+id/buttonErase"
+				android:layout_width="wrap_content"
+				android:layout_height="fill_parent"
+				android:contentDescription="@string/erase"
 				android:src="@drawable/ic_eraser"/>
 
 			<ImageButton

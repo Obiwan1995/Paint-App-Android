@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -30,7 +29,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final int WRITE_PERMISSION_REQUEST = 1;
     private DrawingView mDrawingView;
-    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, textButton;
+    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, eraseButton, addFilterButton;
     private float smallBrush, mediumBrush, largeBrush;
     private final int RESULT_LOAD_IMG = 2;
 
@@ -64,12 +63,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.pallet_pressed));
         addButton = findViewById(R.id.buttonAdd);
         addButton.setOnClickListener(this);
-        textButton = findViewById(R.id.buttonAddFilter);
-        textButton.setOnClickListener(this);
+        addFilterButton = findViewById(R.id.buttonAddFilter);
+        addFilterButton.setOnClickListener(this);
         drawButton = findViewById(R.id.buttonBrush);
         drawButton.setOnClickListener(this);
         newButton = findViewById(R.id.buttonNew);
         newButton.setOnClickListener(this);
+        eraseButton = findViewById(R.id.buttonErase);
+        eraseButton.setOnClickListener(this);
         saveButton = findViewById(R.id.buttonSave);
         saveButton.setOnClickListener(this);
 
@@ -116,8 +117,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showLoadPictureDialog();
                 break;
             case R.id.buttonAddFilter:
-                //Show add text dialog
+                //Show add filter dialog
                 showFiltersDialog();
+                break;
+            case R.id.buttonErase:
+                // Show erase button alert dialog
+                showEraseAlertDialog();
                 break;
             case R.id.buttonNew:
                 // Show new painting alert dialog
@@ -147,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                     mDrawingView.loadImage(selectedImage.copy(Bitmap.Config.ARGB_8888, true));
-					textButton.setVisibility(View.VISIBLE);
+					addFilterButton.setVisibility(View.VISIBLE);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -227,13 +232,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         brushDialog.show();
     }
 
-    private void showNewPaintingAlertDialog(){
+    private void showEraseAlertDialog(){
         AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
         newDialog.setTitle("Erase all annotations");
         newDialog.setMessage("Erase all annotations (you will lose the current drawing)?");
         newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                mDrawingView.startNew();
+                mDrawingView.eraseAllAnnotations();
+                dialog.dismiss();
+            }
+        });
+        newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        newDialog.show();
+    }
+
+    private void showNewPaintingAlertDialog() {
+        AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
+        newDialog.setTitle("Start new drawing");
+        newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
+        newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	addFilterButton.setVisibility(View.GONE);
+                mDrawingView.startNewDrawing();
                 dialog.dismiss();
             }
         });

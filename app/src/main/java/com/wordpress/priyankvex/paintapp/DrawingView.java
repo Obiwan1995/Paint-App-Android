@@ -18,6 +18,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
+
+import java.util.ArrayList;
 
 /**
  * Created by Priyank(@priyankvex) on 5/9/15.
@@ -28,8 +31,10 @@ public class DrawingView extends View{
 
     // To hold the path that will be drawn.
     private Path drawPath;
+    ArrayList<Path> drawPaths;
     // Paint object to draw drawPath and drawCanvas.
     private Paint drawPaint, canvasPaint;
+    ArrayList<Paint> drawPaints;
     // initial color
     private int paintColor = 0xff000000;
     private int previousColor = paintColor;
@@ -59,21 +64,28 @@ public class DrawingView extends View{
      */
     private void setUpDrawing(){
         drawPath = new Path();
-        drawPaint = new Paint();
-        drawPaint.setColor(paintColor);
-        // Making drawing smooth.
-        drawPaint.setAntiAlias(true);
-        drawPaint.setStyle(Paint.Style.STROKE);
-        drawPaint.setStrokeJoin(Paint.Join.ROUND);
-        drawPaint.setStrokeCap(Paint.Cap.ROUND);
-
+		initPaint();
         canvasPaint = new Paint(Paint.DITHER_FLAG);
 
         // Initial brush size is medium.
         brushSize = getResources().getInteger(R.integer.medium_size);
         lastBrushSize = brushSize;
         drawPaint.setStrokeWidth(brushSize);
+        drawPaths = new ArrayList<>();
+        drawPaints = new ArrayList<>();
     }
+
+    private void initPaint()
+	{
+		drawPaint = new Paint();
+		drawPaint.setColor(paintColor);
+		// Making drawing smooth.
+		drawPaint.setAntiAlias(true);
+		drawPaint.setStyle(Paint.Style.STROKE);
+		drawPaint.setStrokeJoin(Paint.Join.ROUND);
+		drawPaint.setStrokeCap(Paint.Cap.ROUND);
+		drawPaint.setStrokeWidth(brushSize);
+	}
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -114,8 +126,10 @@ public class DrawingView extends View{
                     drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
                 }
                 drawCanvas.drawPath(drawPath, drawPaint);
-                drawPath.reset();
-                drawPaint.setXfermode(null);
+                drawPaths.add(drawPath);
+                drawPaints.add(drawPaint);
+                drawPath = new Path();
+               	initPaint();
                 break;
             default:
                 return false;
@@ -161,27 +175,30 @@ public class DrawingView extends View{
         }
     }
 
-    public void startNew(){
+    public void eraseAllAnnotations(){
     	if (lastLoadedImage != null)
 		{
+			drawPaths.clear();
+			drawPaints.clear();
 			loadImage(lastLoadedImage);
 		}
 		else
 		{
-			drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-			invalidate();
+			startNewDrawing();
 		}
     }
 
+    public void startNewDrawing() {
+		drawPaths.clear();
+		drawPaints.clear();
+		drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+		lastLoadedImage = null;
+		invalidate();
+	}
+
     public void loadImage(Bitmap bmp){
         lastLoadedImage = bmp;
-        currentImage = bmp;
-        int width = drawCanvas.getWidth();
-        int height = drawCanvas.getHeight();
-		Rect rect = new Rect(0, 0, width, height);
-
-		drawCanvas.drawBitmap(bmp, new Rect(0, 0, bmp.getWidth(), bmp.getHeight()), rect, drawPaint);
-        invalidate();
+        drawBitmap(bmp);
     }
 
     public void removeAllFilters() {
@@ -199,6 +216,15 @@ public class DrawingView extends View{
     public void drawBitmap(Bitmap bitmap) {
     	currentImage = bitmap;
 		drawCanvas.drawBitmap(bitmap, null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
+		restorePaths();
 		invalidate();
+    }
+
+    public void restorePaths() {
+        for (int i = 0; i < drawPaths.size(); i++)
+        {
+            drawCanvas.drawPath(drawPaths.get(i), drawPaints.get(i));
+        }
+        invalidate();
     }
 }
