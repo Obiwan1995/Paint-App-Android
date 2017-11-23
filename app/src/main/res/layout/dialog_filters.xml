@@ -38,6 +38,17 @@
 			android:drawableLeft="@drawable/ic_filter_vintage_black_24dp"
 			android:drawableStart="@drawable/ic_filter_vintage_black_24dp"
 			android:text="@string/grayscale_filter"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:layout_marginBottom="15dp"/>
+
+	<TextView
+			android:id="@+id/pastelFilter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_palette_black_24dp"
+			android:drawableStart="@drawable/ic_palette_black_24dp"
+			android:text="@string/pastel_filter"
 			android:textAppearance="?android:textAppearanceMedium"/>
 
 </LinearLayout>

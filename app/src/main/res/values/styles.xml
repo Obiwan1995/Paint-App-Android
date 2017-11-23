@@ -5,4 +5,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- Color for ProgressBars -->
+    <style name="AppTheme.BlackAccent">
+        <item name="colorAccent">@color/black</item>
+    </style>
+
 </resources>

@@ -14,9 +14,12 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.FileNotFoundException;
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int RESULT_LOAD_IMG = 2;
 
 	private Dialog filtersDialog;
+	private ProgressBar bar;
+	private RelativeLayout layout;
 
     private View.OnClickListener filterListener = new View.OnClickListener()
 	{
@@ -67,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         newButton.setOnClickListener(this);
         saveButton = findViewById(R.id.buttonSave);
         saveButton.setOnClickListener(this);
+
+        layout = findViewById(R.id.layout);
+        bar = findViewById(R.id.progressBar);
 
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
@@ -308,9 +316,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				mDrawingView.applyGrayScaleFilter();
 				break;
 
+			case R.id.pastelFilter:
+				layout.setAlpha(0.6f);
+				bar.setVisibility(View.VISIBLE);
+				new PastelTask(this).execute(mDrawingView.getCurrentImage());
+				break;
+
 			default:
 				mDrawingView.removeAllFilters();
 				break;
 		}
+	}
+
+	public void onPastelFilterResult(Bitmap bitmap)
+	{
+		mDrawingView.drawBitmap(bitmap);
+		bar.setVisibility(View.GONE);
+		layout.setAlpha(1.0f);
 	}
 }

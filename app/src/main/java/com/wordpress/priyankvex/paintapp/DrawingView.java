@@ -44,6 +44,10 @@ public class DrawingView extends View{
     private Bitmap lastLoadedImage = null;
     private Bitmap currentImage = null;
 
+    public Bitmap getCurrentImage() {
+    	return this.currentImage;
+	}
+
     public DrawingView(Context context, AttributeSet attrs){
         super(context, attrs);
         setUpDrawing();
@@ -182,22 +186,19 @@ public class DrawingView extends View{
 
     public void removeAllFilters() {
     	drawBitmap(lastLoadedImage);
-        invalidate();
     }
 
     public void applyNegateFilter(){
-        currentImage = Negate.invert(currentImage);
-        drawBitmap(currentImage);
-		invalidate();
+        drawBitmap(Negate.invert(currentImage));
     }
 
     public void applyGrayScaleFilter() {
-		currentImage = Grayscale.toGrayscale(currentImage);
-		drawBitmap(currentImage);
-		invalidate();
+		drawBitmap(Grayscale.toGrayscale(currentImage));
     }
 
     public void drawBitmap(Bitmap bitmap) {
+    	currentImage = bitmap;
 		drawCanvas.drawBitmap(bitmap, null, new RectF(0, 0, drawCanvas.getWidth(), drawCanvas.getHeight()), null);
-	}
+		invalidate();
+    }
 }
