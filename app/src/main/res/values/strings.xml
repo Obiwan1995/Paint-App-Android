@@ -9,10 +9,17 @@
     <string name="erase">Erase</string>
     <string name="add_photo">Add photo</string>
     <string name="add_text">Add text</string>
+    <string name="add_filter">Add filter</string>
     <string name="save">Save</string>
     <string name="paint">Paint</string>
     <string name="small">Small</string>
     <string name="medium">Medium</string>
     <string name="large">Large</string>
 
+	<!-- Filters -->
+	<string name="dialog_filters_title">Choose a filter</string>
+	<string name="no_filter">No filter</string>
+	<string name="negate_filter">Negate</string>
+	<string name="grayscale_filter">Grayscale</string>
+	<string name="pastel_filter">Pastel</string>
 </resources>

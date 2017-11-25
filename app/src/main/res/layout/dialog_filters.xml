@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+		android:id="@+id/filtersDialogLayout"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center"
+		android:padding="10dp">
+
+	<TextView
+			android:id="@+id/noFilter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_filter_none_black_24dp"
+			android:drawableStart="@drawable/ic_filter_none_black_24dp"
+			android:text="@string/no_filter"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:layout_marginBottom="15dp"/>
+
+	<TextView
+			android:id="@+id/negateFilter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_brightness_3_black_24dp"
+			android:drawableStart="@drawable/ic_brightness_3_black_24dp"
+			android:text="@string/negate_filter"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:layout_marginBottom="15dp"/>
+
+	<TextView
+			android:id="@+id/grayscaleFilter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_filter_vintage_black_24dp"
+			android:drawableStart="@drawable/ic_filter_vintage_black_24dp"
+			android:text="@string/grayscale_filter"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:layout_marginBottom="15dp"/>
+
+	<TextView
+			android:id="@+id/pastelFilter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_palette_black_24dp"
+			android:drawableStart="@drawable/ic_palette_black_24dp"
+			android:text="@string/pastel_filter"
+			android:textAppearance="?android:textAppearanceMedium"/>
+
+</LinearLayout>

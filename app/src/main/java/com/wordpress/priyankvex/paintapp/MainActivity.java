@@ -1,6 +1,5 @@
 package com.wordpress.priyankvex.paintapp;
 
-import android.app.Activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,13 +14,14 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -29,9 +29,26 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final int WRITE_PERMISSION_REQUEST = 1;
     private DrawingView mDrawingView;
-    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, textButton;
+    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, eraseButton, addFilterButton;
     private float smallBrush, mediumBrush, largeBrush;
     private final int RESULT_LOAD_IMG = 2;
+
+	private Dialog filtersDialog;
+	private ProgressBar bar;
+	private RelativeLayout layout;
+
+    private View.OnClickListener filterListener = new View.OnClickListener()
+	{
+		@Override
+		public void onClick(View view)
+		{
+			if (filtersDialog.isShowing())
+			{
+				filtersDialog.dismiss();
+			}
+			applyFilter(view);
+		}
+	};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +61,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 0th child is white color, so selecting first child to give black as initial color.
         currPaint = (ImageButton)paintLayout.getChildAt(1);
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.pallet_pressed));
-        addButton = (ImageButton) findViewById(R.id.buttonAdd);
+        addButton = findViewById(R.id.buttonAdd);
         addButton.setOnClickListener(this);
-        textButton = (ImageButton) findViewById(R.id.buttonAddText);
-        textButton.setOnClickListener(this);
-        drawButton = (ImageButton) findViewById(R.id.buttonBrush);
+        addFilterButton = findViewById(R.id.buttonAddFilter);
+        addFilterButton.setOnClickListener(this);
+        drawButton = findViewById(R.id.buttonBrush);
         drawButton.setOnClickListener(this);
-        newButton = (ImageButton) findViewById(R.id.buttonNew);
+        newButton = findViewById(R.id.buttonNew);
         newButton.setOnClickListener(this);
-        saveButton =  findViewById(R.id.buttonSave);
+        eraseButton = findViewById(R.id.buttonErase);
+        eraseButton.setOnClickListener(this);
+        saveButton = findViewById(R.id.buttonSave);
         saveButton.setOnClickListener(this);
+
+        layout = findViewById(R.id.layout);
+        bar = findViewById(R.id.progressBar);
 
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
@@ -94,9 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Load a photo from gallery
                 showLoadPictureDialog();
                 break;
-            case R.id.buttonAddText:
-                //Show add text dialog
-                showAddTextDialog();
+            case R.id.buttonAddFilter:
+                //Show add filter dialog
+                showFiltersDialog();
+                break;
+            case R.id.buttonErase:
+                // Show erase button alert dialog
+                showEraseAlertDialog();
                 break;
             case R.id.buttonNew:
                 // Show new painting alert dialog
@@ -121,11 +147,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                mDrawingView.loadImage(selectedImage);
-                newButton.setVisibility(View.VISIBLE);
-                textButton.setVisibility(View.VISIBLE);
+                if (imageUri != null)
+                {
+                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    mDrawingView.loadImage(selectedImage.copy(Bitmap.Config.ARGB_8888, true));
+					addFilterButton.setVisibility(View.VISIBLE);
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
@@ -136,15 +164,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void showAddTextDialog(){
-        mDrawingView.applyNegateFilter();
+    private void showFiltersDialog(){
+        this.filtersDialog = new Dialog(this);
+        this.filtersDialog.setContentView(R.layout.dialog_filters);
+        this.filtersDialog.setTitle(R.string.dialog_filters_title);
+        LinearLayout filtersDialogLayout = filtersDialog.findViewById(R.id.filtersDialogLayout);
+        addFiltersListener(filtersDialogLayout);
+		this.filtersDialog.show();
     }
+
+	private void addFiltersListener(LinearLayout layout){
+    	for (int i = 0; i < layout.getChildCount(); i++)
+		{
+			View view = layout.getChildAt(i);
+			if (view instanceof TextView)
+			{
+				view.setOnClickListener(this.filterListener);
+			}
+		}
+	}
 
     private void showBrushSizeChooserDialog(){
         final Dialog brushDialog = new Dialog(this);
         brushDialog.setContentView(R.layout.dialog_brush_size);
         brushDialog.setTitle("Brush size:");
-        ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
+        ImageButton smallBtn = brushDialog.findViewById(R.id.small_brush);
         smallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 brushDialog.dismiss();
             }
         });
-        ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
+        ImageButton mediumBtn = brushDialog.findViewById(R.id.medium_brush);
         mediumBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
+        ImageButton largeBtn = brushDialog.findViewById(R.id.large_brush);
         largeBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -188,13 +232,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         brushDialog.show();
     }
 
-    private void showNewPaintingAlertDialog(){
+    private void showEraseAlertDialog(){
         AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-        newDialog.setTitle("New drawing");
+        newDialog.setTitle("Erase all annotations");
+        newDialog.setMessage("Erase all annotations (you will lose the current drawing)?");
+        newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                mDrawingView.eraseAllAnnotations();
+                dialog.dismiss();
+            }
+        });
+        newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        newDialog.show();
+    }
+
+    private void showNewPaintingAlertDialog() {
+        AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
+        newDialog.setTitle("Start new drawing");
         newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
         newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                mDrawingView.startNew();
+            	addFilterButton.setVisibility(View.GONE);
+                mDrawingView.startNewDrawing();
                 dialog.dismiss();
             }
         });
@@ -264,4 +327,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Destroy the current cache.
         mDrawingView.destroyDrawingCache();
     }
+
+    public void applyFilter(View view)
+	{
+		switch (view.getId())
+		{
+			case R.id.negateFilter:
+				mDrawingView.applyNegateFilter();
+				break;
+
+			case R.id.grayscaleFilter:
+				mDrawingView.applyGrayScaleFilter();
+				break;
+
+			case R.id.pastelFilter:
+				layout.setAlpha(0.6f);
+				bar.setVisibility(View.VISIBLE);
+				new PastelTask(this).execute(mDrawingView.getCurrentImage());
+				break;
+
+			default:
+				mDrawingView.removeAllFilters();
+				break;
+		}
+	}
+
+	public void onPastelFilterResult(Bitmap bitmap)
+	{
+		mDrawingView.drawBitmap(bitmap);
+		bar.setVisibility(View.GONE);
+		layout.setAlpha(1.0f);
+	}
 }
