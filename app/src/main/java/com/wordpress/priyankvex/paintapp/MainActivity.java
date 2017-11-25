@@ -30,7 +30,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final int WRITE_PERMISSION_REQUEST = 1;
     private DrawingView mDrawingView;
-    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, eraseButton, addFilterButton;
+    private ImageButton currPaint, drawButton, newButton, saveButton, addButton, eraseButton, addFilterButton, undoButton;
     private float smallBrush, mediumBrush, largeBrush;
     private final int RESULT_LOAD_IMG = 2;
 
@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eraseButton.setOnClickListener(this);
         saveButton = findViewById(R.id.buttonSave);
         saveButton.setOnClickListener(this);
+        undoButton = findViewById(R.id.buttonUndo);
+        undoButton.setOnClickListener(this);
 
         layout = findViewById(R.id.layout);
         bar = findViewById(R.id.progressBar);
@@ -153,7 +155,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Show save painting confirmation dialog.
                 showSavePaintingConfirmationDialog();
                 break;
+            case R.id.buttonUndo:
+                undo();
+                break;
         }
+    }
+
+    private void undo(){
+        mDrawingView.undo();
     }
 
     private void showLoadPictureDialog(){

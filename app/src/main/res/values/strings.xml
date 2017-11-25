@@ -22,4 +22,5 @@
 	<string name="negate_filter">Negate</string>
 	<string name="grayscale_filter">Grayscale</string>
 	<string name="pastel_filter">Pastel</string>
+    <string name="undo">Undo</string>
 </resources>

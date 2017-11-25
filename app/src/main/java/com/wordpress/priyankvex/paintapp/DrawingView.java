@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Created by Priyank(@priyankvex) on 5/9/15.
@@ -47,6 +48,7 @@ public class DrawingView extends View{
     // To enable and disable erasing mode.
     private boolean erase = false;
     private Bitmap lastLoadedImage = null;
+    private Stack<Bitmap> previousImages = new Stack<Bitmap>();
     private Bitmap currentImage = null;
 
     public Bitmap getCurrentImage() {
@@ -73,6 +75,11 @@ public class DrawingView extends View{
         drawPaint.setStrokeWidth(brushSize);
         drawPaths = new ArrayList<>();
         drawPaints = new ArrayList<>();
+    }
+
+    public void updateStack(){
+        if(currentImage != null)
+            previousImages.push(currentImage);
     }
 
     private void initPaint()
@@ -110,6 +117,7 @@ public class DrawingView extends View{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        updateStack();
         // X and Y position of user touch.
         float touchX = event.getX();
         float touchY = event.getY();
@@ -176,6 +184,7 @@ public class DrawingView extends View{
     }
 
     public void eraseAllAnnotations(){
+        updateStack();
     	if (lastLoadedImage != null)
 		{
 			drawPaths.clear();
@@ -202,14 +211,17 @@ public class DrawingView extends View{
     }
 
     public void removeAllFilters() {
+        updateStack();
     	drawBitmap(lastLoadedImage);
     }
 
     public void applyNegateFilter(){
+        updateStack();
         drawBitmap(Negate.invert(currentImage));
     }
 
     public void applyGrayScaleFilter() {
+        updateStack();
 		drawBitmap(Grayscale.toGrayscale(currentImage));
     }
 
@@ -226,5 +238,12 @@ public class DrawingView extends View{
             drawCanvas.drawPath(drawPaths.get(i), drawPaints.get(i));
         }
         invalidate();
+    }
+
+    public void undo(){
+        if(previousImages.size() > 0)
+        {
+            drawBitmap(previousImages.pop());
+        }
     }
 }
