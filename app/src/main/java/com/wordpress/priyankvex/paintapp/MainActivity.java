@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -179,12 +180,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 final Uri imageUri = data.getData();
                 if (imageUri != null)
                 {
-                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    final Bitmap selectedImage = this.decodeSampledBitmapFromResource(imageUri, mDrawingView.getWidth(), mDrawingView.getHeight());
                     mDrawingView.loadImage(selectedImage.copy(Bitmap.Config.ARGB_8888, true));
 					addFilterButton.setVisibility(View.VISIBLE);
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
@@ -387,5 +387,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mDrawingView.drawBitmap(bitmap);
 		bar.setVisibility(View.GONE);
 		layout.setAlpha(1.0f);
+	}
+
+	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+		// Raw height and width of image
+		final int height = options.outHeight;
+		final int width = options.outWidth;
+		int inSampleSize = 1;
+
+		if (height > reqHeight || width > reqWidth) {
+
+			final int halfHeight = height / 2;
+			final int halfWidth = width / 2;
+
+			// Calculate the largest inSampleSize value that is a power of 2 and keeps both
+			// height and width larger than the requested height and width.
+			while ((halfHeight / inSampleSize) >= reqHeight
+					&& (halfWidth / inSampleSize) >= reqWidth) {
+				inSampleSize *= 2;
+			}
+		}
+
+		return inSampleSize;
+	}
+
+	public Bitmap decodeSampledBitmapFromResource(Uri uri, int reqWidth, int reqHeight)
+	{
+		try
+		{
+			InputStream imageStream = getContentResolver().openInputStream(uri);
+
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
+			BitmapFactory.decodeStream(imageStream, null, options);
+
+			// recreate the stream
+			// make some calculation to define inSampleSize
+			InputStream imageStream2 = getContentResolver().openInputStream(uri);
+			BitmapFactory.Options options2 = new BitmapFactory.Options();
+			options2.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+			return BitmapFactory.decodeStream(imageStream2, null, options2);
+		}
+		catch (Exception e) {
+			return null;
+		}
 	}
 }

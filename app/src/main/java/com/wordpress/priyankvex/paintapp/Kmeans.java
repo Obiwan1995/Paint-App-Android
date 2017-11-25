@@ -4,6 +4,7 @@ package com.wordpress.priyankvex.paintapp;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.Random;
 
@@ -30,6 +31,7 @@ public class Kmeans{
 	 */
 	private static void initClusters()
 	{
+		Log.d("Kmeans", "Clusters init");
 		for(int i = 0; i < K; i++)
 		{
 			Random rand = new Random();
@@ -72,6 +74,7 @@ public class Kmeans{
 		int n = 0;
 		while (!stop && n < ITER)
 		{
+			Log.d("Kmeans", "Start iteration " + (n+1) + " of " + ITER);
 			updateClusters();
 
 			stop = true;
